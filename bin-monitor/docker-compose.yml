@@ -1,0 +1,48 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: aims
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-aims_db_pw}
+      POSTGRES_DB: aims_bin
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aims -d aims_bin"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://aims:${DB_PASSWORD:-aims_db_pw}@db:5432/aims_bin
+      PILOT_BASE: ${PILOT_BASE:-https://pilot-gps.com}
+      PILOT_USER: ${PILOT_USER}
+      PILOT_PASS: ${PILOT_PASS}
+      APP_SECRET: ${APP_SECRET:-change-me}
+      DASHBOARD_USER: ${DASHBOARD_USER:-aims}
+      DASHBOARD_PASS: ${DASHBOARD_PASS:-aims2026}
+      POLL_INTERVAL_MINUTES: ${POLL_INTERVAL_MINUTES:-180}
+      TRIAL_AGENT_IDS: ${TRIAL_AGENT_IDS:-193843,193930,194072}
+      BIN_GROUP_NAME: ${BIN_GROUP_NAME:-15m All Bins Coloured}
+      # Admin feed for per-point angle history (Kvadrat credentials). Leave blank to
+      # run position-only.
+      PILOT_ADMIN_URL: ${PILOT_ADMIN_URL:-}
+      PILOT_ADMIN_USER: ${PILOT_ADMIN_USER:-}
+      PILOT_ADMIN_PASS: ${PILOT_ADMIN_PASS:-}
+      RAW_DATA_DIR: /data/raw
+      REPORT_XLSX: /data/report.xlsx
+      SEED: ${SEED:-0}
+    volumes:
+      - ./seed-data:/data:ro      # put raw .xlsx + report.xlsx here for first-run seed
+    ports:
+      - "80:8000"
+    restart: unless-stopped
+
+volumes:
+  pgdata:

@@ -1,0 +1,19 @@
+[project]
+name = "aims-bin-monitor"
+version = "0.1.0"
+description = "AIMS Bin Collection Monitor — Pilot GPS -> Postgres -> live map + report"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "psycopg[binary]>=3.2",
+    "shapely>=2.0",
+    "openpyxl>=3.1",
+    "requests>=2.32",
+    "python-dotenv>=1.0",
+    "itsdangerous>=2.2",
+    "python-multipart>=0.0.9",
+]
+
+[tool.uv]
+package = false

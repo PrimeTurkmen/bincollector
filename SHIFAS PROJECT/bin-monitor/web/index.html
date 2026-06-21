@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>AIMS Bin Collection Monitor</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="stylesheet" href="/static/styles.css?v=7"/>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="dot"></span> AIMS Bin Collection Monitor
+    <span class="tag">LIVE</span>
+  </div>
+  <div class="filters">
+    <span class="grp">
+      <span class="grp-label">View</span>
+      <select id="f-color" title="Colour bins by">
+        <option value="last24">Last 24 h (live)</option>
+        <option value="collected">Collected / Missed (period)</option>
+        <option value="truck">By truck</option>
+        <option value="coverage">By coverage</option>
+        <option value="access">By access (parked-car)</option>
+        <option value="status">Distance bands (report)</option>
+      </select>
+      <select id="f-day"><option value="">All days</option></select>
+    </span>
+    <span class="grp">
+      <span class="grp-label">Trucks</span>
+      <div id="truck-toggles" class="chips"></div>
+    </span>
+    <span class="grp">
+      <span class="grp-label">Layers</span>
+      <label class="switch"><input type="checkbox" id="f-pilot"/> Serviced only</label>
+      <label class="switch"><input type="checkbox" id="f-routes"/> Driven route</label>
+      <label class="switch"><input type="checkbox" id="f-points"/> Collection points</label>
+    </span>
+    <span class="grp">
+      <span class="grp-label">Planning</span>
+      <label class="switch"><input type="checkbox" id="f-fleet"/> Fleet plan</label>
+      <select id="fleet-cov" class="hidden" title="Coverage target">
+        <option value="50">50% bins</option>
+        <option value="70" selected>70% bins</option>
+        <option value="90">90% bins</option>
+        <option value="100">100% bins</option>
+      </select>
+      <label class="switch"><input type="checkbox" id="f-opt"/> Optimized route</label>
+      <select id="opt-route" class="hidden" title="Pick a route"></select>
+      <label class="switch hidden" id="opt-snap-wrap"><input type="checkbox" id="opt-snap" checked/> Snap to roads</label>
+    </span>
+    <span id="opt-summary" class="opt-sum"></span>
+    <span class="grp grp-right">
+      <button id="btn-refresh" class="btn">↻ Refresh</button>
+      <a id="btn-export" class="btn ghost" href="/api/export.xlsx">⤓ Excel</a>
+      <a class="btn ghost" href="/logout">Sign out</a>
+    </span>
+  </div>
+</header>
+
+<section class="kpis" id="kpis"></section>
+
+<main class="layout">
+  <div id="map"></div>
+  <div id="resizer" title="Drag to resize"></div>
+  <aside class="panel">
+    <div class="tabs">
+      <button class="tab active" data-tab="bins">Bins</button>
+      <button class="tab" data-tab="viol3">⚠ 3-day</button>
+      <button class="tab" data-tab="viol7">⚠ 7-day</button>
+      <button class="tab" data-tab="lifts">Lift details</button>
+      <button class="tab" data-tab="misses">Missed bins</button>
+      <button class="tab" data-tab="coverage">Truck coverage</button>
+      <button class="tab" data-tab="vday">Vehicle / day</button>
+      <button class="tab" data-tab="area">Areas</button>
+    </div>
+    <div class="legend" id="legend"></div>
+    <div class="tablewrap"><table id="tbl"><thead></thead><tbody></tbody></table></div>
+  </aside>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="/static/app.js?v=7"></script>
+</body>
+</html>
